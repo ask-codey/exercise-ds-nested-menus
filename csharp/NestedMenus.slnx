@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NestedMenus/NestedMenus.csproj" />
+  <Project Path="NestedMenus.Tests/NestedMenus.Tests.csproj" />
+</Solution>

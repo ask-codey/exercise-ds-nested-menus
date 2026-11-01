@@ -1,0 +1,8 @@
+{
+  "name": "nested-menus",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
