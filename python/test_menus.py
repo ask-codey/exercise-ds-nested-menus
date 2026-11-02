@@ -18,6 +18,14 @@ def deep():
     ])
 
 
+def ten_deep():
+    """A tasting menu ten sections deep: Course 1 holds Course 2, and so on down to Course 10. Course n serves Bite n at $n."""
+    section = MenuSection("Course 10", [MenuItem("Bite 10", 10)], [])
+    for number in range(9, 0, -1):
+        section = MenuSection(f"Course {number}", [MenuItem(f"Bite {number}", number)], [section])
+    return section
+
+
 def test_count_items_on_the_dinner_menu():
     assert count_items(dinner()) == 11, "Not yet: the dinner menu has 11 dishes, counting every section inside it."
 
@@ -90,3 +98,12 @@ def test_menu_lines_for_the_dinner_menu():
 
 def test_menu_lines_for_a_section_with_nothing_inside():
     assert menu_lines(empty("Specials")) == ["Specials"], "Not yet: a section with nothing in it is one line: its name."
+
+
+def test_a_menu_ten_sections_deep():
+    menu = ten_deep()
+    assert count_items(menu) == 10, "Not yet: the tasting menu is ten sections deep, with one dish in each: 10 dishes."
+    priciest = most_expensive(menu)
+    assert priciest is not None and priciest.name == "Bite 10", "Not yet: Bite 10, $10, is in Course 10, nine sections down, and it's the priciest."
+    lines = menu_lines(menu)
+    assert len(lines) == 20 and lines[-1] == " " * 20 + "Bite 10 $10", "Not yet: the tasting menu is 20 lines, and its last, Bite 10 $10, is 20 spaces in."

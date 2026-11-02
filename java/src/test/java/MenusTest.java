@@ -19,6 +19,15 @@ class MenusTest {
                 new MenuSection("Tonight", List.of(new MenuItem("Truffle Pasta", 25)), List.of())))));
     }
 
+    // A tasting menu ten sections deep: Course 1 holds Course 2, and so on down to Course 10. Course n serves Bite n at $n.
+    private static MenuSection tenDeep() {
+        MenuSection section = new MenuSection("Course 10", List.of(new MenuItem("Bite 10", 10)), List.of());
+        for (int number = 9; number >= 1; number--) {
+            section = new MenuSection("Course " + number, List.of(new MenuItem("Bite " + number, number)), List.of(section));
+        }
+        return section;
+    }
+
     @Test
     void countItemsOnTheDinnerMenu() {
         assertEquals(11, Menus.countItems(SampleMenu.dinner()), "Not yet: the dinner menu has 11 dishes, counting every section inside it.");
@@ -105,5 +114,17 @@ class MenusTest {
     void menuLinesForASectionWithNothingInside() {
         assertEquals(List.of("Specials"), Menus.menuLines(empty("Specials")),
             "Not yet: a section with nothing in it is one line: its name.");
+    }
+
+    @Test
+    void aMenuTenSectionsDeep() {
+        MenuSection menu = tenDeep();
+        assertEquals(10, Menus.countItems(menu), "Not yet: the tasting menu is ten sections deep, with one dish in each: 10 dishes.");
+        MenuItem priciest = Menus.mostExpensive(menu);
+        assertNotNull(priciest, "Not yet: Bite 10, $10, is in Course 10, nine sections down, and it's the priciest.");
+        assertEquals("Bite 10", priciest.name(), "Not yet: Bite 10, $10, is in Course 10, nine sections down, and it's the priciest.");
+        List<String> lines = Menus.menuLines(menu);
+        assertEquals(20, lines.size(), "Not yet: the tasting menu is 20 lines, and its last, Bite 10 $10, is 20 spaces in.");
+        assertEquals(" ".repeat(20) + "Bite 10 $10", lines.get(lines.size() - 1), "Not yet: the tasting menu is 20 lines, and its last, Bite 10 $10, is 20 spaces in.");
     }
 }

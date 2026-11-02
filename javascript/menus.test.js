@@ -22,6 +22,15 @@ function deep() {
   };
 }
 
+// A tasting menu ten sections deep: Course 1 holds Course 2, and so on down to Course 10. Course n serves Bite n at $n.
+function tenDeep() {
+  let section = { name: "Course 10", items: [{ name: "Bite 10", price: 10 }], sections: [] };
+  for (let number = 9; number >= 1; number--) {
+    section = { name: `Course ${number}`, items: [{ name: `Bite ${number}`, price: number }], sections: [section] };
+  }
+  return section;
+}
+
 test("count items on the dinner menu", () => {
   assert.equal(countItems(dinner()), 11, "Not yet: the dinner menu has 11 dishes, counting every section inside it.");
 });
@@ -89,4 +98,13 @@ test("menu lines for the dinner menu", () => {
 
 test("menu lines for a section with nothing inside", () => {
   assert.deepEqual(menuLines(empty("Specials")), ["Specials"], "Not yet: a section with nothing in it is one line: its name.");
+});
+
+test("a menu ten sections deep", () => {
+  const menu = tenDeep();
+  assert.equal(countItems(menu), 10, "Not yet: the tasting menu is ten sections deep, with one dish in each: 10 dishes.");
+  assert.equal(mostExpensive(menu)?.name, "Bite 10", "Not yet: Bite 10, $10, is in Course 10, nine sections down, and it's the priciest.");
+  const lines = menuLines(menu);
+  assert.equal(lines.length, 20, "Not yet: the tasting menu is 20 lines, and its last, Bite 10 $10, is 20 spaces in.");
+  assert.equal(lines[lines.length - 1], " ".repeat(20) + "Bite 10 $10", "Not yet: the tasting menu is 20 lines, and its last, Bite 10 $10, is 20 spaces in.");
 });

@@ -17,6 +17,17 @@ public class MenusTests
         ]),
     ]);
 
+    // A tasting menu ten sections deep: Course 1 holds Course 2, and so on down to Course 10. Course n serves Bite n at $n.
+    private static MenuSection TenDeep()
+    {
+        MenuSection section = new MenuSection("Course 10", [new MenuItem("Bite 10", 10)], []);
+        for (int number = 9; number >= 1; number--)
+        {
+            section = new MenuSection("Course " + number, [new MenuItem("Bite " + number, number)], [section]);
+        }
+        return section;
+    }
+
     [TestMethod]
     public void CountItemsOnTheDinnerMenu()
     {
@@ -115,5 +126,18 @@ public class MenusTests
     {
         CollectionAssert.AreEqual(new List<string> { "Specials" }, Menus.MenuLines(Empty("Specials")),
             "Not yet: a section with nothing in it is one line: its name.");
+    }
+
+    [TestMethod]
+    public void AMenuTenSectionsDeep()
+    {
+        MenuSection menu = TenDeep();
+        Assert.AreEqual(10, Menus.CountItems(menu), "Not yet: the tasting menu is ten sections deep, with one dish in each: 10 dishes.");
+        MenuItem? priciest = Menus.MostExpensive(menu);
+        Assert.IsNotNull(priciest, "Not yet: Bite 10, $10, is in Course 10, nine sections down, and it's the priciest.");
+        Assert.AreEqual("Bite 10", priciest.Name, "Not yet: Bite 10, $10, is in Course 10, nine sections down, and it's the priciest.");
+        List<string> lines = Menus.MenuLines(menu);
+        Assert.AreEqual(20, lines.Count, "Not yet: the tasting menu is 20 lines, and its last, Bite 10 $10, is 20 spaces in.");
+        Assert.AreEqual(new string(' ', 20) + "Bite 10 $10", lines[^1], "Not yet: the tasting menu is 20 lines, and its last, Bite 10 $10, is 20 spaces in.");
     }
 }
